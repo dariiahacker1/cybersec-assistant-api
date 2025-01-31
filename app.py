@@ -4,8 +4,7 @@ from openai import OpenAI
 
 app = Flask(__name__)
 
-client = OpenAI( api_key=os.getenv("OPENAI_API_KEY") )
-
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 @app.route('/detect-phishing', methods=['GET', 'POST'])
 def detect_phishing():
@@ -31,6 +30,7 @@ def detect_phishing():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+
 @app.route('/detect-malware', methods=['GET', 'POST'])
 def detect_malware():
     code = request.args.get("code") if request.method == "GET" else request.json.get("code")
@@ -54,7 +54,6 @@ def detect_malware():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
 
 
 if __name__ == '__main__':
