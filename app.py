@@ -31,6 +31,31 @@ def detect_phishing():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+@app.route('/detect-malware', methods=['GET', 'POST'])
+def detect_malware():
+    code = request.args.get("code") if request.method == "GET" else request.json.get("code")
+
+    if not code:
+        return jsonify({"error": "No code provided"}), 400
+
+    prompt = f"Analyze the following code for malware indicators and provide a risk assessment:\n\n{code}\n\nGive a short verdict and reasoning."
+
+    try:
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "system", "content": "You are a cybersecurity expert analyzing code for malware indicators."},
+                {"role": "user", "content": prompt}
+            ]
+        )
+
+        analysis = response.choices[0].message.content
+        return jsonify({"analysis": analysis})
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
